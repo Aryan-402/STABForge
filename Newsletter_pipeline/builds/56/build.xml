@@ -1,0 +1,244 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<flow-build plugin="workflow-job@1472.ve4d5eca_143c4">
+  <actions>
+    <hudson.model.CauseAction>
+      <causeBag class="linked-hash-map">
+        <entry>
+          <hudson.model.Cause_-UserIdCause>
+            <userId>aryan</userId>
+          </hudson.model.Cause_-UserIdCause>
+          <int>1</int>
+        </entry>
+      </causeBag>
+    </hudson.model.CauseAction>
+    <jenkins.metrics.impl.TimeInQueueAction plugin="metrics@4.2.21-458.vcf496cb_839e4">
+      <queuingDurationMillis>18</queuingDurationMillis>
+      <blockedDurationMillis>0</blockedDurationMillis>
+      <buildableDurationMillis>0</buildableDurationMillis>
+      <waitingDurationMillis>5</waitingDurationMillis>
+    </jenkins.metrics.impl.TimeInQueueAction>
+    <org.jenkinsci.plugins.workflow.libs.LibrariesAction plugin="pipeline-groovy-lib@744.v5b_556ee7c253">
+      <libraries/>
+    </org.jenkinsci.plugins.workflow.libs.LibrariesAction>
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.ExecutionModelAction plugin="pipeline-model-definition@2.2218.v56d0cda_37c72">
+      <stagesUUID>eede5633-a70d-479d-97bd-3947686fa04e</stagesUUID>
+      <pipelineDefs>
+        <org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTPipelineDef plugin="pipeline-model-api@2.2218.v56d0cda_37c72">
+          <stages>
+            <stages>
+              <org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTStage>
+                <name>Fetch Weather and Send Emails</name>
+                <branches>
+                  <org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTBranch>
+                    <name>default</name>
+                    <steps>
+                      <org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTScriptBlock>
+                        <name>script</name>
+                        <args class="org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTNamedArgumentList">
+                          <arguments class="linked-hash-map">
+                            <entry>
+                              <org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTKey>
+                                <key>scriptBlock</key>
+                              </org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTKey>
+                              <org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTValue_-ConstantValue>
+                                <value class="string">try {
+                        // Fetch weather data for Delhi
+                        def lat = &apos;28.61&apos;
+                        def lon = &apos;77.23&apos;
+                        def apiKey = &apos;be6de9dfceda819cec7a792cd8ee9de4&apos;
+
+                        def weatherApiResponse = sh(script: &quot;&quot;&quot;
+                            curl -s &quot;https://api.openweathermap.org/data/2.5/weather?lat=${lat}&amp;lon=${lon}&amp;units=metric&amp;appid=${apiKey}&quot;
+                        &quot;&quot;&quot;, returnStdout: true).trim()
+
+                        // Parse JSON response
+                        def weatherData = readJSON text: weatherApiResponse
+                        def weatherDescription = weatherData.weather[0].description
+                        def temperature = weatherData.main.temp
+                        def cityName = weatherData.name
+
+                        // Read email data
+                        def csvFile = readFile(file: &apos;EmailData.csv&apos;)
+                        def lines = csvFile.split(&apos;\n&apos;)
+
+                        lines.each { line -&gt;
+                            if (line.trim()) {
+                                def columns = line.split(&apos;,&apos;)
+                                if (columns.size() &gt;= 2) {
+                                    def name = columns[0].trim()
+                                    def email = columns[1].trim()
+
+                                    echo &quot;Sending email to: ${name} &lt;${email}&gt;&quot;
+
+                                    emailext(
+                                        from: &apos;noreply@stabforge.com&apos;,
+                                        to: email,
+                                        subject: &quot;STABForge Newsletter - Weather Update ☀️&quot;,
+                                        body: &quot;&quot;&quot;
+                                        &lt;!DOCTYPE html&gt;
+                                        &lt;html&gt;
+                                        &lt;body&gt;
+                                            &lt;h1&gt;Hi ${name}, Welcome to STABForge ☺️&lt;/h1&gt;
+                                            &lt;h2&gt;Weather Update for ${cityName}:&lt;/h2&gt;
+                                            &lt;p&gt;&lt;strong&gt;Condition:&lt;/strong&gt; ${weatherDescription.capitalize()}&lt;/p&gt;
+                                            &lt;p&gt;&lt;strong&gt;Temperature:&lt;/strong&gt; ${temperature}°C&lt;/p&gt;
+                                            &lt;p&gt;&amp;copy; 2024 STABForge&lt;/p&gt;
+                                        &lt;/body&gt;
+                                        &lt;/html&gt;
+                                        &quot;&quot;&quot;,
+                                        mimeType: &apos;text/html&apos;
+                                    )
+                                }
+                            }
+                        }
+                    } catch (Exception e) {
+                        echo &quot;Error: ${e.message}&quot;
+                    }</value>
+                              </org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTValue_-ConstantValue>
+                            </entry>
+                          </arguments>
+                        </args>
+                      </org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTScriptBlock>
+                    </steps>
+                  </org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTBranch>
+                </branches>
+              </org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTStage>
+            </stages>
+            <uuid>eede5633-a70d-479d-97bd-3947686fa04e</uuid>
+          </stages>
+          <agent>
+            <agentType>
+              <key>any</key>
+            </agentType>
+          </agent>
+        </org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTPipelineDef>
+      </pipelineDefs>
+    </org.jenkinsci.plugins.pipeline.modeldefinition.actions.ExecutionModelAction>
+    <com.cloudbees.plugins.credentials.builds.CredentialsParameterBinder plugin="credentials@1393.v6017143c1763">
+      <boundCredentials class="concurrent-hash-map"/>
+    </com.cloudbees.plugins.credentials.builds.CredentialsParameterBinder>
+    <hudson.tasks.MailMessageIdAction plugin="mailer@489.vd4b_25144138f">
+      <messageId>&lt;664064662.1.1734513166321@localhost&gt;</messageId>
+    </hudson.tasks.MailMessageIdAction>
+    <jenkins.metrics.impl.SubTaskTimeInQueueAction plugin="metrics@4.2.21-458.vcf496cb_839e4">
+      <queuingDurationMillis>45</queuingDurationMillis>
+      <blockedDurationMillis>0</blockedDurationMillis>
+      <buildableDurationMillis>42</buildableDurationMillis>
+      <waitingDurationMillis>0</waitingDurationMillis>
+      <executingDurationMillis>7978</executingDurationMillis>
+      <workUnitCount>1</workUnitCount>
+    </jenkins.metrics.impl.SubTaskTimeInQueueAction>
+  </actions>
+  <queueId>70</queueId>
+  <timestamp>1734513159127</timestamp>
+  <startTime>1734513159168</startTime>
+  <result>SUCCESS</result>
+  <duration>10288</duration>
+  <charset>UTF-8</charset>
+  <keepLog>false</keepLog>
+  <execution class="org.jenkinsci.plugins.workflow.cps.CpsFlowExecution">
+    <result>SUCCESS</result>
+    <script>pipeline {
+    agent any
+    stages {
+        stage(&apos;Fetch Weather and Send Emails&apos;) {
+            steps {
+                script {
+                    try {
+                        // Fetch weather data for Delhi
+                        def lat = &apos;28.61&apos;
+                        def lon = &apos;77.23&apos;
+                        def apiKey = &apos;be6de9dfceda819cec7a792cd8ee9de4&apos;
+
+                        def weatherApiResponse = sh(script: &quot;&quot;&quot;
+                            curl -s &quot;https://api.openweathermap.org/data/2.5/weather?lat=${lat}&amp;lon=${lon}&amp;units=metric&amp;appid=${apiKey}&quot;
+                        &quot;&quot;&quot;, returnStdout: true).trim()
+
+                        // Parse JSON response
+                        def weatherData = readJSON text: weatherApiResponse
+                        def weatherDescription = weatherData.weather[0].description
+                        def temperature = weatherData.main.temp
+                        def cityName = weatherData.name
+
+                        // Read email data
+                        def csvFile = readFile(file: &apos;EmailData.csv&apos;)
+                        def lines = csvFile.split(&apos;\n&apos;)
+
+                        lines.each { line -&gt;
+                            if (line.trim()) {
+                                def columns = line.split(&apos;,&apos;)
+                                if (columns.size() &gt;= 2) {
+                                    def name = columns[0].trim()
+                                    def email = columns[1].trim()
+
+                                    echo &quot;Sending email to: ${name} &lt;${email}&gt;&quot;
+
+                                    emailext(
+                                        from: &apos;noreply@stabforge.com&apos;,
+                                        to: email,
+                                        subject: &quot;STABForge Newsletter - Weather Update ☀️&quot;,
+                                        body: &quot;&quot;&quot;
+                                        &lt;!DOCTYPE html&gt;
+                                        &lt;html&gt;
+                                        &lt;body&gt;
+                                            &lt;h1&gt;Hi ${name}, Welcome to STABForge ☺️&lt;/h1&gt;
+                                            &lt;h2&gt;Weather Update for ${cityName}:&lt;/h2&gt;
+                                            &lt;p&gt;&lt;strong&gt;Condition:&lt;/strong&gt; ${weatherDescription.capitalize()}&lt;/p&gt;
+                                            &lt;p&gt;&lt;strong&gt;Temperature:&lt;/strong&gt; ${temperature}°C&lt;/p&gt;
+                                            &lt;p&gt;&amp;copy; 2024 STABForge&lt;/p&gt;
+                                        &lt;/body&gt;
+                                        &lt;/html&gt;
+                                        &quot;&quot;&quot;,
+                                        mimeType: &apos;text/html&apos;
+                                    )
+                                }
+                            }
+                        }
+                    } catch (Exception e) {
+                        echo &quot;Error: ${e.message}&quot;
+                    }
+                }
+            }
+        }
+    }
+}
+</script>
+    <loadedScripts class="linked-hash-map"/>
+    <durabilityHint>MAX_SURVIVABILITY</durabilityHint>
+    <timings class="map">
+      <entry>
+        <string>flowNode</string>
+        <long>1706676701</long>
+      </entry>
+      <entry>
+        <string>classLoad</string>
+        <long>1753846820</long>
+      </entry>
+      <entry>
+        <string>runQueue</string>
+        <long>3736743604</long>
+      </entry>
+      <entry>
+        <string>run</string>
+        <long>4176572824</long>
+      </entry>
+      <entry>
+        <string>parse</string>
+        <long>453879646</long>
+      </entry>
+      <entry>
+        <string>saveProgram</string>
+        <long>709443660</long>
+      </entry>
+    </timings>
+    <internalCalls class="sorted-set"/>
+    <sandbox>true</sandbox>
+    <iota>22</iota>
+    <head>1:22</head>
+    <done>true</done>
+    <resumeBlocked>false</resumeBlocked>
+    <storageDir>workflow-completed</storageDir>
+  </execution>
+  <completed>true</completed>
+  <checkouts class="hudson.util.PersistedList"/>
+</flow-build>

@@ -1,0 +1,413 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<flow-build plugin="workflow-job@1468.vcf4f5ee92395">
+  <actions>
+    <hudson.model.CauseAction>
+      <causeBag class="linked-hash-map">
+        <entry>
+          <hudson.model.Cause_-UserIdCause>
+            <userId>aryan</userId>
+          </hudson.model.Cause_-UserIdCause>
+          <int>1</int>
+        </entry>
+      </causeBag>
+    </hudson.model.CauseAction>
+    <jenkins.metrics.impl.TimeInQueueAction plugin="metrics@4.2.21-458.vcf496cb_839e4">
+      <queuingDurationMillis>1</queuingDurationMillis>
+      <blockedDurationMillis>0</blockedDurationMillis>
+      <buildableDurationMillis>0</buildableDurationMillis>
+      <waitingDurationMillis>0</waitingDurationMillis>
+    </jenkins.metrics.impl.TimeInQueueAction>
+    <org.jenkinsci.plugins.workflow.libs.LibrariesAction plugin="pipeline-groovy-lib@744.v5b_556ee7c253">
+      <libraries/>
+    </org.jenkinsci.plugins.workflow.libs.LibrariesAction>
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.ExecutionModelAction plugin="pipeline-model-definition@2.2218.v56d0cda_37c72">
+      <stagesUUID>e7a6ceb2-c3d9-4676-8c5e-9e64ef9a6bb0</stagesUUID>
+      <pipelineDefs>
+        <org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTPipelineDef plugin="pipeline-model-api@2.2218.v56d0cda_37c72">
+          <stages>
+            <stages>
+              <org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTStage>
+                <name>Build</name>
+                <branches>
+                  <org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTBranch>
+                    <name>default</name>
+                    <steps>
+                      <org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTStep>
+                        <name>echo</name>
+                        <args class="org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTNamedArgumentList">
+                          <arguments class="linked-hash-map">
+                            <entry>
+                              <org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTKey>
+                                <key>message</key>
+                              </org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTKey>
+                              <org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTValue_-ConstantValue>
+                                <value class="string">Performing build steps...</value>
+                              </org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTValue_-ConstantValue>
+                            </entry>
+                          </arguments>
+                        </args>
+                      </org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTStep>
+                    </steps>
+                  </org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTBranch>
+                </branches>
+              </org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTStage>
+            </stages>
+            <uuid>e7a6ceb2-c3d9-4676-8c5e-9e64ef9a6bb0</uuid>
+          </stages>
+          <postBuild>
+            <conditions>
+              <org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTBuildCondition>
+                <condition>always</condition>
+                <branch>
+                  <name>default</name>
+                  <steps>
+                    <org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTScriptBlock>
+                      <name>script</name>
+                      <args class="org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTNamedArgumentList">
+                        <arguments class="linked-hash-map">
+                          <entry>
+                            <org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTKey>
+                              <key>scriptBlock</key>
+                            </org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTKey>
+                            <org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTValue_-ConstantValue>
+                              <value class="string">try {
+                    // Read the CSV file from the workspace
+                    def csvFile = readFile(file: &apos;EmailData.csv&apos;)
+                    
+                    // Split the file into lines (each row in the CSV)
+                    def lines = csvFile.split(&apos;\n&apos;)
+                    
+                    // Iterate over each line (row in the CSV)
+                    lines.each { line -&gt;
+                        // Skip empty lines (if any)
+                        if (line.trim()) {
+                            // Split the line into columns by comma
+                            def columns = line.split(&apos;,&apos;)
+                            
+                            // Validate the CSV structure
+                            if (columns.size() &gt;= 2) {
+                                def name = columns[0].trim()  // Assuming the name is in the first column
+                                def email = columns[1].trim()  // Assuming the email is in the second column
+                                
+                                // Log the recipient&apos;s name and email for debugging
+                                echo &quot;Sending email to: ${name} &lt;${email}&gt;&quot;
+                                
+                                // Send the email using the Email Extension plugin
+                                emailext(
+                                    to: email,
+                                    subject: &quot;STABForge Newsletter&quot;,
+                                    body: &quot;&quot;&quot;
+                                        &lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+    &lt;title&gt;STABForge Newsletter&lt;/title&gt;
+    &lt;style&gt;
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            background-color: #007bff;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .content {
+            padding: 20px;
+            color: #333;
+            line-height: 1.6;
+        }
+        .content h2 {
+            color: #007bff;
+        }
+        .button {
+            display: block;
+            width: fit-content;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            text-align: center;
+        }
+        .footer {
+            background: #f4f4f4;
+            color: #666;
+            text-align: center;
+            padding: 10px;
+            font-size: 12px;
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div class=&quot;container&quot;&gt;
+        &lt;div class=&quot;header&quot;&gt;
+              &lt;h1&gt;Hi ${name}, Welcome to STABForge ☺️ &lt;/h1&gt;
+            &lt;p&gt;Your go-to blog for software insights and IT trends&lt;/p&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;content&quot;&gt;
+            &lt;h2&gt;Latest Articles&lt;/h2&gt;
+            &lt;ul&gt;
+                &lt;li&gt;&lt;strong&gt;Dynamic PowerShell: Unleash 10x Automation Power&lt;/strong&gt; - Learn how PowerShell transforms automation in DevOps.&lt;/li&gt;
+                &lt;li&gt;&lt;strong&gt;Neural Networks Simplified&lt;/strong&gt; - Understand the building blocks of AI with this beginner-friendly guide.&lt;/li&gt;
+                &lt;li&gt;&lt;strong&gt;Boosting Productivity with DevOps&lt;/strong&gt; - Explore how DevOps can revolutionize your workflow.&lt;/li&gt;
+            &lt;/ul&gt;
+            &lt;a href=&quot;https://stabforge.com&quot; class=&quot;button&quot;&gt;Read More on STABForge&lt;/a&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;footer&quot;&gt;
+            &lt;p&gt;&amp;copy; 2024 STABForge. All rights reserved.&lt;/p&gt;
+            &lt;p&gt;Follow us on &lt;a href=&quot;#&quot; style=&quot;color: #007bff;&quot;&gt;LinkedIn&lt;/a&gt; | &lt;a href=&quot;#&quot; style=&quot;color: #007bff;&quot;&gt;Twitter&lt;/a&gt;&lt;/p&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+
+                                    &quot;&quot;&quot;,
+                                    mimeType: &apos;text/html&apos;
+                                )
+                            } else {
+                                echo &quot;Skipping invalid row: ${line}&quot;
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    echo &quot;Error reading or processing the CSV file: ${e.message}&quot;
+                }</value>
+                            </org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTValue_-ConstantValue>
+                          </entry>
+                        </arguments>
+                      </args>
+                    </org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTScriptBlock>
+                  </steps>
+                </branch>
+              </org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTBuildCondition>
+            </conditions>
+          </postBuild>
+          <agent>
+            <agentType>
+              <key>any</key>
+            </agentType>
+          </agent>
+        </org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTPipelineDef>
+      </pipelineDefs>
+    </org.jenkinsci.plugins.pipeline.modeldefinition.actions.ExecutionModelAction>
+    <com.cloudbees.plugins.credentials.builds.CredentialsParameterBinder plugin="credentials@1389.vd7a_b_f5fa_50a_2">
+      <boundCredentials class="concurrent-hash-map"/>
+    </com.cloudbees.plugins.credentials.builds.CredentialsParameterBinder>
+    <hudson.tasks.MailMessageIdAction plugin="mailer@489.vd4b_25144138f">
+      <messageId>&lt;384714566.53.1732889759904@localhost&gt;</messageId>
+    </hudson.tasks.MailMessageIdAction>
+    <jenkins.metrics.impl.SubTaskTimeInQueueAction plugin="metrics@4.2.21-458.vcf496cb_839e4">
+      <queuingDurationMillis>57</queuingDurationMillis>
+      <blockedDurationMillis>0</blockedDurationMillis>
+      <buildableDurationMillis>56</buildableDurationMillis>
+      <waitingDurationMillis>0</waitingDurationMillis>
+      <executingDurationMillis>10131</executingDurationMillis>
+      <workUnitCount>1</workUnitCount>
+    </jenkins.metrics.impl.SubTaskTimeInQueueAction>
+  </actions>
+  <queueId>32</queueId>
+  <timestamp>1732889754485</timestamp>
+  <startTime>1732889754567</startTime>
+  <result>SUCCESS</result>
+  <duration>11090</duration>
+  <charset>UTF-8</charset>
+  <keepLog>false</keepLog>
+  <execution class="org.jenkinsci.plugins.workflow.cps.CpsFlowExecution">
+    <result>SUCCESS</result>
+    <script>pipeline {
+    agent any
+    stages {
+        stage(&apos;Build&apos;) {
+            steps {
+                echo &apos;Performing build steps...&apos;
+            }
+        }
+    }
+    post {
+        always {
+            script {
+                try {
+                    // Read the CSV file from the workspace
+                    def csvFile = readFile(file: &apos;EmailData.csv&apos;)
+                    
+                    // Split the file into lines (each row in the CSV)
+                    def lines = csvFile.split(&apos;\n&apos;)
+                    
+                    // Iterate over each line (row in the CSV)
+                    lines.each { line -&gt;
+                        // Skip empty lines (if any)
+                        if (line.trim()) {
+                            // Split the line into columns by comma
+                            def columns = line.split(&apos;,&apos;)
+                            
+                            // Validate the CSV structure
+                            if (columns.size() &gt;= 2) {
+                                def name = columns[0].trim()  // Assuming the name is in the first column
+                                def email = columns[1].trim()  // Assuming the email is in the second column
+                                
+                                // Log the recipient&apos;s name and email for debugging
+                                echo &quot;Sending email to: ${name} &lt;${email}&gt;&quot;
+                                
+                                // Send the email using the Email Extension plugin
+                                emailext(
+                                    to: email,
+                                    subject: &quot;STABForge Newsletter&quot;,
+                                    body: &quot;&quot;&quot;
+                                        &lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+    &lt;title&gt;STABForge Newsletter&lt;/title&gt;
+    &lt;style&gt;
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            background-color: #007bff;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .content {
+            padding: 20px;
+            color: #333;
+            line-height: 1.6;
+        }
+        .content h2 {
+            color: #007bff;
+        }
+        .button {
+            display: block;
+            width: fit-content;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            text-align: center;
+        }
+        .footer {
+            background: #f4f4f4;
+            color: #666;
+            text-align: center;
+            padding: 10px;
+            font-size: 12px;
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div class=&quot;container&quot;&gt;
+        &lt;div class=&quot;header&quot;&gt;
+              &lt;h1&gt;Hi ${name}, Welcome to STABForge ☺️ &lt;/h1&gt;
+            &lt;p&gt;Your go-to blog for software insights and IT trends&lt;/p&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;content&quot;&gt;
+            &lt;h2&gt;Latest Articles&lt;/h2&gt;
+            &lt;ul&gt;
+                &lt;li&gt;&lt;strong&gt;Dynamic PowerShell: Unleash 10x Automation Power&lt;/strong&gt; - Learn how PowerShell transforms automation in DevOps.&lt;/li&gt;
+                &lt;li&gt;&lt;strong&gt;Neural Networks Simplified&lt;/strong&gt; - Understand the building blocks of AI with this beginner-friendly guide.&lt;/li&gt;
+                &lt;li&gt;&lt;strong&gt;Boosting Productivity with DevOps&lt;/strong&gt; - Explore how DevOps can revolutionize your workflow.&lt;/li&gt;
+            &lt;/ul&gt;
+            &lt;a href=&quot;https://stabforge.com&quot; class=&quot;button&quot;&gt;Read More on STABForge&lt;/a&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;footer&quot;&gt;
+            &lt;p&gt;&amp;copy; 2024 STABForge. All rights reserved.&lt;/p&gt;
+            &lt;p&gt;Follow us on &lt;a href=&quot;#&quot; style=&quot;color: #007bff;&quot;&gt;LinkedIn&lt;/a&gt; | &lt;a href=&quot;#&quot; style=&quot;color: #007bff;&quot;&gt;Twitter&lt;/a&gt;&lt;/p&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+
+                                    &quot;&quot;&quot;,
+                                    mimeType: &apos;text/html&apos;
+                                )
+                            } else {
+                                echo &quot;Skipping invalid row: ${line}&quot;
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    echo &quot;Error reading or processing the CSV file: ${e.message}&quot;
+                }
+            }
+        }
+    }
+}
+</script>
+    <loadedScripts class="linked-hash-map"/>
+    <durabilityHint>MAX_SURVIVABILITY</durabilityHint>
+    <timings class="map">
+      <entry>
+        <string>flowNode</string>
+        <long>2047997251</long>
+      </entry>
+      <entry>
+        <string>classLoad</string>
+        <long>129068958</long>
+      </entry>
+      <entry>
+        <string>runQueue</string>
+        <long>4373325532</long>
+      </entry>
+      <entry>
+        <string>run</string>
+        <long>3526636027</long>
+      </entry>
+      <entry>
+        <string>parse</string>
+        <long>33785459</long>
+      </entry>
+      <entry>
+        <string>saveProgram</string>
+        <long>602972978</long>
+      </entry>
+    </timings>
+    <internalCalls class="sorted-set">
+      <string>hudson.model.Result.fromString</string>
+      <string>org.jenkinsci.plugins.workflow.job.WorkflowRun.result</string>
+    </internalCalls>
+    <sandbox>true</sandbox>
+    <iota>25</iota>
+    <head>1:25</head>
+    <done>true</done>
+    <resumeBlocked>false</resumeBlocked>
+    <storageDir>workflow-completed</storageDir>
+  </execution>
+  <completed>true</completed>
+  <checkouts class="hudson.util.PersistedList"/>
+</flow-build>
