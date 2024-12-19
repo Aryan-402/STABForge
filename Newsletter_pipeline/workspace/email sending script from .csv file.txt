@@ -1,0 +1,53 @@
+pipeline {
+    agent any
+    stages {
+        stage('Build') {
+            steps {
+                echo 'Performing build steps...'
+            }
+        }
+    }
+    post {
+        always {
+            script {
+                // Read the CSV file from the workspace
+                def csvFile = readFile('EmailData.csv')
+                
+                // Split the file into lines (each row in the CSV)
+                def lines = csvFile.split('\n')
+                
+                // Iterate over each line (row in the CSV)
+                lines.each { line ->
+                    // Skip empty lines (if any)
+                    if (line.trim()) {
+                        // Split the line into columns by comma
+                        def columns = line.split(',')
+                        
+                        // Extract name and email from the columns
+                        def name = columns[0].trim()  // Assuming the name is in the first column
+                        def email = columns[1].trim()  // Assuming the email is in the second column
+                        
+                        // Log the recipient's name and email for debugging
+                        echo "Sending email to: ${name} <${email}>"
+                        
+                        // Send the email using the Email Extension plugin
+                        emailext(
+                            subject: "Build #${env.BUILD_NUMBER} - ${currentBuild.currentResult}",
+                            body: """
+                                Hi ${name},
+                                
+                                The build for ${env.JOB_NAME} #${env.BUILD_NUMBER} has completed with status: ${currentBuild.currentResult}.
+                                
+                                Please review the logs for more details.
+
+                                Regards,
+                                Jenkins
+                            """,
+                            to: email  // Send email to the respective email address
+                        )
+                    }
+                }
+            }
+        }
+    }
+}

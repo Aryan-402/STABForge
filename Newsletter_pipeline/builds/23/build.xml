@@ -1,0 +1,249 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<flow-build plugin="workflow-job@1468.vcf4f5ee92395">
+  <actions>
+    <hudson.model.CauseAction>
+      <causeBag class="linked-hash-map">
+        <entry>
+          <hudson.model.Cause_-UserIdCause>
+            <userId>aryan</userId>
+          </hudson.model.Cause_-UserIdCause>
+          <int>1</int>
+        </entry>
+      </causeBag>
+    </hudson.model.CauseAction>
+    <jenkins.metrics.impl.TimeInQueueAction plugin="metrics@4.2.21-458.vcf496cb_839e4">
+      <queuingDurationMillis>1</queuingDurationMillis>
+      <blockedDurationMillis>0</blockedDurationMillis>
+      <buildableDurationMillis>0</buildableDurationMillis>
+      <waitingDurationMillis>0</waitingDurationMillis>
+    </jenkins.metrics.impl.TimeInQueueAction>
+    <org.jenkinsci.plugins.workflow.libs.LibrariesAction plugin="pipeline-groovy-lib@744.v5b_556ee7c253">
+      <libraries/>
+    </org.jenkinsci.plugins.workflow.libs.LibrariesAction>
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.ExecutionModelAction plugin="pipeline-model-definition@2.2218.v56d0cda_37c72">
+      <stagesUUID>49def4cf-9c6e-429e-bc7d-daf034c9459d</stagesUUID>
+      <pipelineDefs>
+        <org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTPipelineDef plugin="pipeline-model-api@2.2218.v56d0cda_37c72">
+          <stages>
+            <stages>
+              <org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTStage>
+                <name>Build</name>
+                <branches>
+                  <org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTBranch>
+                    <name>default</name>
+                    <steps>
+                      <org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTStep>
+                        <name>echo</name>
+                        <args class="org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTNamedArgumentList">
+                          <arguments class="linked-hash-map">
+                            <entry>
+                              <org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTKey>
+                                <key>message</key>
+                              </org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTKey>
+                              <org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTValue_-ConstantValue>
+                                <value class="string">Performing build steps...</value>
+                              </org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTValue_-ConstantValue>
+                            </entry>
+                          </arguments>
+                        </args>
+                      </org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTStep>
+                    </steps>
+                  </org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTBranch>
+                </branches>
+              </org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTStage>
+            </stages>
+            <uuid>49def4cf-9c6e-429e-bc7d-daf034c9459d</uuid>
+          </stages>
+          <postBuild>
+            <conditions>
+              <org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTBuildCondition>
+                <condition>always</condition>
+                <branch>
+                  <name>default</name>
+                  <steps>
+                    <org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTScriptBlock>
+                      <name>script</name>
+                      <args class="org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTNamedArgumentList">
+                        <arguments class="linked-hash-map">
+                          <entry>
+                            <org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTKey>
+                              <key>scriptBlock</key>
+                            </org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTKey>
+                            <org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTValue_-ConstantValue>
+                              <value class="string">def csvFile = readFile(&apos;EmailData.csv&apos;)
+                
+                // Split the file into lines (each row in the CSV)
+                def lines = csvFile.split(&apos;\n&apos;)
+                
+                // Iterate over each line (row in the CSV)
+                lines.each { line -&gt;
+                    // Skip empty lines (if any)
+                    if (line.trim()) {
+                        // Split the line into columns by comma
+                        def columns = line.split(&apos;,&apos;)
+                        
+                        // Extract name and email from the columns
+                        def name = columns[0].trim()  // Assuming the name is in the first column
+                        def email = columns[1].trim()  // Assuming the email is in the second column
+                        
+                        // Log the recipient&apos;s name and email for debugging
+                        echo &quot;Sending email to: ${name} &lt;${email}&gt;&quot;
+                        
+                        // Send the email using the Email Extension plugin
+                        emailext(
+                            subject: &quot;Build #${env.BUILD_NUMBER} - ${currentBuild.currentResult}&quot;,
+                            body: &quot;&quot;&quot;
+                                Hi ${name},
+                                
+                                The build for ${env.JOB_NAME} #${env.BUILD_NUMBER} has completed with status: ${currentBuild.currentResult}.
+                                
+                                Please review the logs for more details.
+
+                                Regards,
+                                Jenkins
+                            &quot;&quot;&quot;,
+                            to: email  // Send email to the respective email address
+                        )
+                    }
+                }</value>
+                            </org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTValue_-ConstantValue>
+                          </entry>
+                        </arguments>
+                      </args>
+                    </org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTScriptBlock>
+                  </steps>
+                </branch>
+              </org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTBuildCondition>
+            </conditions>
+          </postBuild>
+          <agent>
+            <agentType>
+              <key>any</key>
+            </agentType>
+          </agent>
+        </org.jenkinsci.plugins.pipeline.modeldefinition.ast.ModelASTPipelineDef>
+      </pipelineDefs>
+    </org.jenkinsci.plugins.pipeline.modeldefinition.actions.ExecutionModelAction>
+    <org.jenkinsci.plugins.workflow.cps.EnvActionImpl plugin="workflow-cps@3996.va_f5c1799f978">
+      <env class="tree-map"/>
+    </org.jenkinsci.plugins.workflow.cps.EnvActionImpl>
+    <com.cloudbees.plugins.credentials.builds.CredentialsParameterBinder plugin="credentials@1389.vd7a_b_f5fa_50a_2">
+      <boundCredentials class="concurrent-hash-map"/>
+    </com.cloudbees.plugins.credentials.builds.CredentialsParameterBinder>
+    <hudson.tasks.MailMessageIdAction plugin="mailer@489.vd4b_25144138f">
+      <messageId>&lt;1749898886.15.1732886063068@localhost&gt;</messageId>
+    </hudson.tasks.MailMessageIdAction>
+    <jenkins.metrics.impl.SubTaskTimeInQueueAction plugin="metrics@4.2.21-458.vcf496cb_839e4">
+      <queuingDurationMillis>40</queuingDurationMillis>
+      <blockedDurationMillis>0</blockedDurationMillis>
+      <buildableDurationMillis>38</buildableDurationMillis>
+      <waitingDurationMillis>0</waitingDurationMillis>
+      <executingDurationMillis>4928</executingDurationMillis>
+      <workUnitCount>1</workUnitCount>
+    </jenkins.metrics.impl.SubTaskTimeInQueueAction>
+  </actions>
+  <queueId>11</queueId>
+  <timestamp>1732886059404</timestamp>
+  <startTime>1732886059462</startTime>
+  <result>SUCCESS</result>
+  <duration>6010</duration>
+  <charset>UTF-8</charset>
+  <keepLog>false</keepLog>
+  <execution class="org.jenkinsci.plugins.workflow.cps.CpsFlowExecution">
+    <result>SUCCESS</result>
+    <script>pipeline {
+    agent any
+    stages {
+        stage(&apos;Build&apos;) {
+            steps {
+                echo &apos;Performing build steps...&apos;
+            }
+        }
+    }
+    post {
+        always {
+            script {
+                // Read the CSV file from the workspace
+                def csvFile = readFile(&apos;EmailData.csv&apos;)
+                
+                // Split the file into lines (each row in the CSV)
+                def lines = csvFile.split(&apos;\n&apos;)
+                
+                // Iterate over each line (row in the CSV)
+                lines.each { line -&gt;
+                    // Skip empty lines (if any)
+                    if (line.trim()) {
+                        // Split the line into columns by comma
+                        def columns = line.split(&apos;,&apos;)
+                        
+                        // Extract name and email from the columns
+                        def name = columns[0].trim()  // Assuming the name is in the first column
+                        def email = columns[1].trim()  // Assuming the email is in the second column
+                        
+                        // Log the recipient&apos;s name and email for debugging
+                        echo &quot;Sending email to: ${name} &lt;${email}&gt;&quot;
+                        
+                        // Send the email using the Email Extension plugin
+                        emailext(
+                            subject: &quot;Build #${env.BUILD_NUMBER} - ${currentBuild.currentResult}&quot;,
+                            body: &quot;&quot;&quot;
+                                Hi ${name},
+                                
+                                The build for ${env.JOB_NAME} #${env.BUILD_NUMBER} has completed with status: ${currentBuild.currentResult}.
+                                
+                                Please review the logs for more details.
+
+                                Regards,
+                                Jenkins
+                            &quot;&quot;&quot;,
+                            to: email  // Send email to the respective email address
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+</script>
+    <loadedScripts class="linked-hash-map"/>
+    <durabilityHint>MAX_SURVIVABILITY</durabilityHint>
+    <timings class="map">
+      <entry>
+        <string>flowNode</string>
+        <long>1879410288</long>
+      </entry>
+      <entry>
+        <string>classLoad</string>
+        <long>489200045</long>
+      </entry>
+      <entry>
+        <string>runQueue</string>
+        <long>4019329441</long>
+      </entry>
+      <entry>
+        <string>run</string>
+        <long>3408398348</long>
+      </entry>
+      <entry>
+        <string>parse</string>
+        <long>110067966</long>
+      </entry>
+      <entry>
+        <string>saveProgram</string>
+        <long>545271401</long>
+      </entry>
+    </timings>
+    <internalCalls class="sorted-set">
+      <string>hudson.model.Result.fromString</string>
+      <string>org.jenkinsci.plugins.workflow.job.WorkflowRun.result</string>
+    </internalCalls>
+    <sandbox>true</sandbox>
+    <iota>25</iota>
+    <head>1:25</head>
+    <done>true</done>
+    <resumeBlocked>false</resumeBlocked>
+    <storageDir>workflow-completed</storageDir>
+  </execution>
+  <completed>true</completed>
+  <checkouts class="hudson.util.PersistedList"/>
+</flow-build>
